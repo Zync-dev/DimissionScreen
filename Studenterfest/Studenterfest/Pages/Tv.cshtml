@@ -1,0 +1,72 @@
+@page
+@model DimissionScreen.Pages.TvModel
+@{
+    Layout = null;
+    var config = new
+    {
+        title = Model.Title,
+        subtitle = Model.Subtitle,
+        uploadUrl = Model.UploadUrl,
+        jamUrl = Model.JamUrl,
+        photosUrl = "/Tv?handler=Photos",
+        nowPlayingUrl = "/Tv?handler=NowPlaying"
+    };
+}
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Dimission – storskærm</title>
+    <link rel="stylesheet" href="~/css/tv.css" asp-append-version="true" />
+</head>
+<body>
+    <div class="screen">
+        <div class="topbar">
+            <div class="title">@Model.Title<small>@Model.Subtitle</small></div>
+            <div class="live off" id="live"><span class="dot"></span> <span id="liveText">Forbinder…</span></div>
+        </div>
+
+        <div class="slide" id="slide">
+            <div class="empty" id="empty">
+                <div class="e">📸</div>
+                <div class="t">Scan QR-koden for at sende det første billede</div>
+            </div>
+            <div class="new" id="new">✨ Nyt billede!</div>
+            <div class="count" id="count" style="display:none">0 billeder</div>
+        </div>
+
+        <div class="right">
+            <div class="card">
+                <div class="jamtag off" id="jamtag">▶ <span id="jamtagText">Venter på musik…</span></div>
+                <div class="now">
+                    <div class="art" id="art">🎵</div>
+                    <div class="meta">
+                        <div class="song" id="song">Intet spiller</div>
+                        <div class="artist" id="artist">Start jammet på Spotify</div>
+                    </div>
+                </div>
+                <div class="bar"><i id="prog"></i></div>
+                <div class="tt"><span id="elapsed">0:00</span><span id="total">0:00</span></div>
+            </div>
+
+            <div class="qrs">
+                <div class="card qrcard photo">
+                    <div class="qr" id="qrPhoto"></div>
+                    <div class="qrlabel">📸 Upload billede</div>
+                    <div class="qrsub">Scan &amp; del dine billeder</div>
+                </div>
+                <div class="card qrcard jam">
+                    <div class="qr" id="qrJam"></div>
+                    <div class="qrlabel">🎶 Join jammet</div>
+                    <div class="qrsub">Tilføj sange til køen</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>window.TV_CONFIG = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(config));</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="~/js/tv.js" asp-append-version="true"></script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+@page "/spotify/callback"
+@model DimissionScreen.Pages.SpotifyCallbackModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="utf-8" />
+    <title>Spotify forbundet</title>
+    <style>
+        body { font-family: ui-sans-serif, system-ui, sans-serif; background:#0f0a1c; color:#f4f1ff; padding:40px; line-height:1.6; }
+        code { display:block; background:#1b1230; padding:16px; border-radius:10px; word-break:break-all; margin:16px 0; user-select:all; }
+        a { color:#46e07f; }
+    </style>
+</head>
+<body>
+    @if (string.IsNullOrEmpty(Model.RefreshToken))
+    {
+        <h1>Noget gik galt ❌</h1>
+        <p>@Model.Error</p>
+        <p><a href="/spotify/login">Prøv igen</a></p>
+    }
+    else
+    {
+        <h1>Spotify er forbundet! ✅</h1>
+        <p>Kopiér dette <strong>refresh token</strong> og gem det som Railway env var
+           <code>Spotify__RefreshToken</code> (så overlever det en genstart):</p>
+        <code>@Model.RefreshToken</code>
+        <p>Derefter kan du åbne <a href="/Tv">storskærmen</a>.</p>
+    }
+</body>
+</html>

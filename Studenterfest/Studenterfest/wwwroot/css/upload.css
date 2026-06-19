@@ -1,0 +1,32 @@
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+body { font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  background: radial-gradient(130% 120% at 50% 0%, #3a2150, #1b1230 55%, #0f0a1c);
+  color: #f4f1ff; min-height: 100dvh; display: flex; flex-direction: column;
+  align-items: center; padding: 28px 22px calc(28px + env(safe-area-inset-bottom)); }
+.top { text-align: center; margin: 18px 0 26px; }
+h1 { font-size: 25px; font-weight: 800; letter-spacing: .3px; }
+.sub { opacity: .6; margin-top: 6px; font-size: 15px; }
+.pick { width: 100%; max-width: 420px; border: 2px dashed rgba(245,180,90,.5);
+  background: rgba(245,180,90,.08); border-radius: 18px; padding: 34px 20px; text-align: center; cursor: pointer; transition: .15s; }
+.pick:active { transform: scale(.985); background: rgba(245,180,90,.14); }
+.pick .ico { font-size: 46px; }
+.pick .t { font-weight: 700; font-size: 18px; margin-top: 10px; }
+.pick .s { opacity: .6; font-size: 13px; margin-top: 4px; }
+input[type=file] { display: none; }
+.name { width: 100%; max-width: 420px; margin-top: 16px; }
+.name input { width: 100%; padding: 14px 16px; border-radius: 12px; border: 1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.06); color: #fff; font-size: 16px; }
+.name input::placeholder { color: rgba(255,255,255,.4); }
+.grid { width: 100%; max-width: 420px; display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-top: 16px; }
+.thumb { position: relative; aspect-ratio: 1; border-radius: 10px; overflow: hidden; background: rgba(0,0,0,.4); }
+.thumb img { width: 100%; height: 100%; object-fit: cover; }
+.thumb .st { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,.5); font-size: 22px; }
+.send { width: 100%; max-width: 420px; margin-top: 22px; padding: 17px; border: none; border-radius: 14px;
+  background: #f5b45a; color: #241500; font-weight: 800; font-size: 17px; cursor: pointer; }
+.send:disabled { opacity: .4; }
+.send:active { transform: scale(.99); }
+.msg { margin-top: 18px; min-height: 22px; font-size: 15px; text-align: center; }
+.ok { color: #7ee08a; }
+.err { color: #ff8a8a; }
+.more { margin-top: 14px; background: none; border: 1px solid rgba(255,255,255,.2); color: #fff;
+  padding: 11px 20px; border-radius: 12px; font-size: 15px; cursor: pointer; }
