@@ -1,7 +1,7 @@
 # Railway kræver en Dockerfile til .NET (Railpack understøtter ikke .NET endnu)
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
-COPY DimissionScreen.csproj ./
+COPY Studenterfest.csproj ./
 RUN dotnet restore
 COPY . ./
 RUN dotnet publish -c Release -o /app/publish
