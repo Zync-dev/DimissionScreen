@@ -98,21 +98,30 @@
 
   // --- Lyrics ---
   const lyricsEl = document.getElementById('lyrics');
-  const lyPrev = document.getElementById('lyPrev');
-  const lyCur = document.getElementById('lyCur');
-  const lyN1 = document.getElementById('lyN1');
-  const lyN2 = document.getElementById('lyN2');
-  const lyN3 = document.getElementById('lyN3');
-  const lySlots = [lyPrev, lyCur, lyN1, lyN2, lyN3];
+  const lyTrack = document.getElementById('lyTrack');
   let lyricsLines = [];
+  let lyLineEls = [];
   let curLineIdx = -2;
   let currentTrackKey = null;
 
   function hideLyrics() {
     lyricsLines = [];
+    lyLineEls = [];
     curLineIdx = -2;
     lyricsEl.hidden = true;
-    lySlots.forEach(el => { el.textContent = ''; });
+    lyTrack.innerHTML = '';
+    lyTrack.style.transform = 'translateY(0)';
+  }
+
+  function buildLyrics(lines) {
+    lyricsLines = lines;
+    lyLineEls = lines.map(function (l) {
+      const d = document.createElement('div');
+      d.className = 'ly-line';
+      d.textContent = l.text && l.text.length ? l.text : '\u00a0';
+      lyTrack.appendChild(d);
+      return d;
+    });
   }
 
   async function loadLyrics(d) {
@@ -128,16 +137,16 @@
       const r = await fetch(CFG.lyricsUrl + '&' + u.toString());
       const data = await r.json();
       if (data.found && Array.isArray(data.lines) && data.lines.length) {
-        lyricsLines = data.lines;
+        buildLyrics(data.lines);
         curLineIdx = -2;
         lyricsEl.hidden = false;
-        updateLyrics(curProgress);
+        requestAnimationFrame(function () { updateLyrics(curProgress); });
       }
     } catch (e) { }
   }
 
   function updateLyrics(posMs) {
-    if (!lyricsLines.length) return;
+    if (!lyLineEls.length) return;
     let idx = -1;
     for (let i = 0; i < lyricsLines.length; i++) {
       if (lyricsLines[i].t <= posMs) idx = i; else break;
@@ -145,16 +154,18 @@
     if (idx === curLineIdx) return;
     curLineIdx = idx;
 
-    const at = i => (i >= 0 && i < lyricsLines.length) ? lyricsLines[i].text : '';
-    lyPrev.textContent = idx >= 1 ? at(idx - 1) : '';
-    lyCur.textContent = idx >= 0 ? at(idx) : '';
-    lyN1.textContent = at(idx + 1);
-    lyN2.textContent = at(idx + 2);
-    lyN3.textContent = at(idx + 3);
+    lyLineEls.forEach(function (el) { el.classList.remove('active', 'near'); });
+    if (idx < 0) { lyTrack.style.transform = 'translateY(0)'; return; }
 
-    lyricsEl.classList.remove('anim');
-    void lyricsEl.offsetWidth; // genstarter animationen
-    lyricsEl.classList.add('anim');
+    const cur = lyLineEls[idx];
+    cur.classList.add('active');
+    if (lyLineEls[idx - 1]) lyLineEls[idx - 1].classList.add('near');
+    if (lyLineEls[idx + 1]) lyLineEls[idx + 1].classList.add('near');
+
+    // glid banen så den aktive linje sidder ~40% nede i panelet
+    const focal = lyricsEl.clientHeight * 0.4;
+    const y = cur.offsetTop + cur.offsetHeight / 2;
+    lyTrack.style.transform = 'translateY(' + (focal - y) + 'px)';
   }
 
   let curProgress = 0, curDuration = 0, playing = false, lastTick = Date.now();
