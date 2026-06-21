@@ -50,6 +50,9 @@ body {
 .count { position: absolute; right: 14px; top: 14px; background: rgba(0,0,0,.5); padding: 5px 11px; border-radius: 8px; font-size: clamp(10px, 1vw, 13px); color: #cac6d6; z-index: 3; font-variant-numeric: tabular-nums; }
 .new { position: absolute; left: 14px; top: 14px; background: rgba(0,0,0,.55); color: #cac6d6; padding: 5px 12px; border-radius: 8px; font-size: clamp(10px, 1vw, 13px); z-index: 3; opacity: 0; transition: opacity .4s; }
 .new.show { opacity: 1; }
+.credit { position: absolute; left: 14px; bottom: 14px; display: flex; align-items: center; gap: 7px; background: rgba(0,0,0,.5); color: #d6d2e0; padding: 6px 13px; border-radius: 999px; font-size: clamp(11px, 1.1vw, 14px); z-index: 3; opacity: 0; transition: opacity .5s; }
+.credit.show { opacity: 1; }
+.credit .icon { font-size: 1.05em; color: #b3aec0; }
 
 /* Right column */
 .right { display: flex; flex-direction: column; justify-content: space-between; gap: clamp(14px, 1.6vw, 22px); min-height: 0; }

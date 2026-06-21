@@ -24,6 +24,13 @@
   const emptyEl = document.getElementById('empty');
   const countEl = document.getElementById('count');
   const newEl = document.getElementById('new');
+  const creditEl = document.getElementById('credit');
+  const creditName = document.getElementById('creditName');
+
+  function setCredit(name) {
+    if (name) { creditName.textContent = name; creditEl.classList.add('show'); }
+    else { creditEl.classList.remove('show'); }
+  }
 
   function ensureLayers() {
     if (frames.length) return;
@@ -40,18 +47,19 @@
     }
   }
 
-  function display(url, flash) {
+  function display(photo, flash) {
     ensureLayers();
     const next = 1 - activeLayer;
     const fr = frames[next];
     fr.img.onload = () => {
-      fr.bg.style.backgroundImage = 'url("' + url + '")';
+      fr.bg.style.backgroundImage = 'url("' + photo.url + '")';
       fr.f.classList.add('on');
       frames[activeLayer].f.classList.remove('on');
       activeLayer = next;
     };
-    fr.img.src = url;
+    fr.img.src = photo.url;
     emptyEl.style.display = 'none';
+    setCredit(photo.name);
     if (flash) {
       newEl.classList.add('show');
       setTimeout(() => newEl.classList.remove('show'), 3000);
@@ -62,10 +70,10 @@
     try {
       const r = await fetch(CFG.photosUrl);
       const data = await r.json();
-      const urls = data.map(d => d.url);
+      const items = data.map(d => ({ url: d.url, name: d.name || '' }));
       const isFirstLoad = photos.length === 0;
-      const hadNew = urls.length > photos.length;
-      photos = urls;
+      const hadNew = items.length > photos.length;
+      photos = items;
       countEl.style.display = photos.length ? 'block' : 'none';
       countEl.textContent = photos.length + (photos.length === 1 ? ' billede' : ' billeder');
       if (photos.length && (isFirstLoad || hadNew)) {

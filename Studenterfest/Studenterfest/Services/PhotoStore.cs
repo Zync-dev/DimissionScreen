@@ -20,20 +20,50 @@ public class PhotoStore
         return dir.GetFiles("*.jpg")
                   .OrderBy(f => f.CreationTimeUtc)
                   .TakeLast(max)
-                  .Select(f => (object)new
+                  .Select(f =>
                   {
-                      url = $"/uploads/{f.Name}",
-                      ts = new DateTimeOffset(f.CreationTimeUtc).ToUnixTimeMilliseconds()
+                      var baseName = Path.GetFileNameWithoutExtension(f.Name);
+                      var sidecar = Path.Combine(UploadsDir, baseName + ".txt");
+                      string? name = null;
+                      if (File.Exists(sidecar))
+                      {
+                          try { name = File.ReadAllText(sidecar).Trim(); } catch { /* ignorér */ }
+                          if (string.IsNullOrWhiteSpace(name)) name = null;
+                      }
+                      return (object)new
+                      {
+                          url = $"/uploads/{f.Name}",
+                          ts = new DateTimeOffset(f.CreationTimeUtc).ToUnixTimeMilliseconds(),
+                          name
+                      };
                   })
                   .ToArray();
     }
 
-    public async Task<string> SaveAsync(IFormFile file)
+    public async Task<string> SaveAsync(IFormFile file, string? name)
     {
-        var name = $"{DateTime.UtcNow:yyyyMMddHHmmssfff}_{Random.Shared.Next(1000, 9999)}.jpg";
-        var dest = Path.Combine(UploadsDir, name);
-        await using var fs = File.Create(dest);
-        await file.CopyToAsync(fs);
-        return $"/uploads/{name}";
+        var stamp = $"{DateTime.UtcNow:yyyyMMddHHmmssfff}_{Random.Shared.Next(1000, 9999)}";
+        var fileName = stamp + ".jpg";
+        var dest = Path.Combine(UploadsDir, fileName);
+        await using (var fs = File.Create(dest))
+        {
+            await file.CopyToAsync(fs);
+        }
+
+        name = CleanName(name);
+        if (!string.IsNullOrEmpty(name))
+        {
+            try { await File.WriteAllTextAsync(Path.Combine(UploadsDir, stamp + ".txt"), name); }
+            catch { /* navn er valgfrit – fejler det, gemmer vi bare billedet */ }
+        }
+
+        return $"/uploads/{fileName}";
+    }
+
+    private static string CleanName(string? n)
+    {
+        if (string.IsNullOrWhiteSpace(n)) return "";
+        n = n.Replace("\r", " ").Replace("\n", " ").Trim();
+        return n.Length > 40 ? n.Substring(0, 40) : n;
     }
 }

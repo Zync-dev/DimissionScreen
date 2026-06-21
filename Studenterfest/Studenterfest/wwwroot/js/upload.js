@@ -49,6 +49,7 @@
     sendBtn.disabled = true;
     msg.className = 'msg';
     msg.textContent = 'Sender…';
+    const who = (document.getElementById('who').value || '').trim();
     let ok = 0, fail = 0;
 
     for (const it of queue) {
@@ -57,6 +58,7 @@
       try {
         const fd = new FormData();
         fd.append('photo', it.blob, 'photo.jpg');
+        if (who) fd.append('who', who);
         const r = await fetch('/Upload', {
           method: 'POST',
           headers: { 'RequestVerificationToken': rvt },
