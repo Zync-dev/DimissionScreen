@@ -7,11 +7,7 @@
     if (!el) return;
     el.innerHTML = '';
     if (window.QRCode && text) {
-      new QRCode(el, {
-        text, width: 260, height: 260,
-        colorDark: '#000', colorLight: '#fff',
-        correctLevel: QRCode.CorrectLevel.M
-      });
+      new QRCode(el, { text, width: 260, height: 260, colorDark: '#000', colorLight: '#fff', correctLevel: QRCode.CorrectLevel.M });
     } else {
       el.innerHTML = '<div class="fallback">' + (text || '(mangler link)') + '</div>';
     }
@@ -19,34 +15,42 @@
   makeQR('qrPhoto', CFG.uploadUrl);
   makeQR('qrJam', CFG.jamUrl);
 
-  // --- Slideshow ---
+  // --- Slideshow (fuldt billede + udtonet baggrund, ingen beskæring) ---
   let photos = [];
   let shown = -1;
   let activeLayer = 0;
-  const layers = [];
+  const frames = [];
   const slide = document.getElementById('slide');
   const emptyEl = document.getElementById('empty');
   const countEl = document.getElementById('count');
   const newEl = document.getElementById('new');
 
   function ensureLayers() {
-    if (layers.length) return;
+    if (frames.length) return;
     for (let i = 0; i < 2; i++) {
-      const im = document.createElement('img');
-      slide.insertBefore(im, newEl);
-      layers.push(im);
+      const f = document.createElement('div');
+      f.className = 'frame';
+      const bg = document.createElement('div');
+      bg.className = 'bg';
+      const img = document.createElement('img');
+      f.appendChild(bg);
+      f.appendChild(img);
+      slide.insertBefore(f, newEl);
+      frames.push({ f, bg, img });
     }
   }
 
   function display(url, flash) {
     ensureLayers();
     const next = 1 - activeLayer;
-    layers[next].onload = () => {
-      layers[next].classList.add('on');
-      layers[activeLayer].classList.remove('on');
+    const fr = frames[next];
+    fr.img.onload = () => {
+      fr.bg.style.backgroundImage = 'url("' + url + '")';
+      fr.f.classList.add('on');
+      frames[activeLayer].f.classList.remove('on');
       activeLayer = next;
     };
-    layers[next].src = url;
+    fr.img.src = url;
     emptyEl.style.display = 'none';
     if (flash) {
       newEl.classList.add('show');
@@ -68,7 +72,7 @@
         shown = photos.length - 1;
         display(photos[shown], !isFirstLoad);
       }
-    } catch (e) { /* ignorér – prøver igen næste interval */ }
+    } catch (e) { }
   }
 
   function advance() {
@@ -84,7 +88,6 @@
   // --- Spotify "spiller nu" ---
   const live = document.getElementById('live');
   const liveText = document.getElementById('liveText');
-  const jamtag = document.getElementById('jamtag');
   const jamtagText = document.getElementById('jamtagText');
   const songEl = document.getElementById('song');
   const artistEl = document.getElementById('artist');
@@ -96,33 +99,32 @@
   let curProgress = 0, curDuration = 0, playing = false, lastTick = Date.now();
   const fmt = s => { s = Math.max(0, Math.floor(s)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
 
-  function setLive(on, txt) {
-    live.classList.toggle('off', !on);
-    liveText.textContent = txt;
-    jamtag.classList.toggle('off', !on);
+  function setArt(url) {
+    if (url) { artEl.style.backgroundImage = 'url("' + url + '")'; artEl.classList.add('has-art'); }
+    else { artEl.style.backgroundImage = ''; artEl.classList.remove('has-art'); }
   }
 
   async function fetchNowPlaying() {
     try {
       const r = await fetch(CFG.nowPlayingUrl);
       const d = await r.json();
-      if (!d.connected) { setLive(false, 'Spotify ikke forbundet'); jamtagText.textContent = 'Forbind Spotify'; playing = false; return; }
-      if (!d.isPlaying || !d.title) { setLive(false, 'Intet spiller'); jamtagText.textContent = 'Sat på pause'; playing = false; return; }
+      if (!d.connected) { live.classList.remove('on'); liveText.textContent = 'spotify ikke forbundet'; jamtagText.textContent = 'forbind spotify'; playing = false; return; }
+      if (!d.isPlaying || !d.title) { live.classList.remove('on'); liveText.textContent = 'intet spiller'; jamtagText.textContent = 'sat på pause'; playing = false; return; }
 
-      setLive(true, 'SPOTIFY JAM · LIVE');
-      jamtagText.textContent = 'Spiller nu fra jammet';
+      live.classList.add('on');
+      liveText.textContent = 'live fra jammet';
+      jamtagText.textContent = 'spiller nu';
       songEl.textContent = d.title;
       artistEl.textContent = d.album ? (d.artist + ' · ' + d.album) : d.artist;
-      if (d.art) { artEl.style.backgroundImage = 'url(' + d.art + ')'; artEl.style.backgroundSize = 'cover'; artEl.textContent = ''; }
+      setArt(d.art);
       curProgress = d.progressMs; curDuration = d.durationMs; playing = true; lastTick = Date.now();
       totalEl.textContent = fmt(curDuration / 1000);
-    } catch (e) { /* ignorér */ }
+    } catch (e) { }
   }
 
   fetchNowPlaying();
   setInterval(fetchNowPlaying, 4000);
 
-  // Lokal opdatering hvert sekund så baren bevæger sig flydende mellem polls
   setInterval(() => {
     if (!playing || !curDuration) return;
     const now = Date.now();

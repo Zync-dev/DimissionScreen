@@ -23,24 +23,31 @@
 <body>
     <div class="screen">
         <div class="topbar">
-            <div class="title">@Model.Title<small>@Model.Subtitle</small></div>
-            <div class="live off" id="live"><span class="dot"></span> <span id="liveText">Forbinder…</span></div>
+            <div class="title">@Model.Title<span class="sub">@Model.Subtitle</span></div>
+            <div class="live" id="live">
+                <span class="dot"></span> <span id="liveText">forbinder…</span>
+            </div>
         </div>
 
         <div class="slide" id="slide">
             <div class="empty" id="empty">
-                <div class="e">📸</div>
+                <span class="icon"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="1.5"></rect><circle cx="8.5" cy="10" r="1.5"></circle><path d="M5 17l4.5 -4.5 4 4 2.5 -2.5 3 3"></path></svg></span>
                 <div class="t">Scan QR-koden for at sende det første billede</div>
             </div>
-            <div class="new" id="new">✨ Nyt billede!</div>
-            <div class="count" id="count" style="display:none">0 billeder</div>
+            <div class="new" id="new">nyt billede</div>
+            <div class="count" id="count" style="display:none">0</div>
         </div>
 
         <div class="right">
-            <div class="card">
-                <div class="jamtag off" id="jamtag">▶ <span id="jamtagText">Venter på musik…</span></div>
+            <div class="card np">
+                <div class="label">
+                    <span class="icon" id="npIcon"><svg viewBox="0 0 24 24"><polygon points="7 4 20 12 7 20 7 4"></polygon></svg></span>
+                    <span id="jamtagText">venter på musik</span>
+                </div>
                 <div class="now">
-                    <div class="art" id="art">🎵</div>
+                    <div class="art" id="art">
+                        <span class="icon"><svg viewBox="0 0 24 24"><circle cx="6" cy="17" r="3"></circle><circle cx="16" cy="15" r="3"></circle><path d="M9 17V5l10 -2v12"></path></svg></span>
+                    </div>
                     <div class="meta">
                         <div class="song" id="song">Intet spiller</div>
                         <div class="artist" id="artist">Start jammet på Spotify</div>
@@ -51,15 +58,19 @@
             </div>
 
             <div class="qrs">
-                <div class="card qrcard photo">
+                <div class="card qrcard">
                     <div class="qr" id="qrPhoto"></div>
-                    <div class="qrlabel">📸 Upload billede</div>
-                    <div class="qrsub">Scan &amp; del dine billeder</div>
+                    <div class="qrlabel">
+                        <span class="icon"><svg viewBox="0 0 24 24"><path d="M5 8h2.5l1.5 -2h6l1.5 2H19a1 1 0 0 1 1 1v8a1 1 0 0 1 -1 1H5a1 1 0 0 1 -1 -1V9a1 1 0 0 1 1 -1z"></path><circle cx="12" cy="13" r="3"></circle></svg></span>
+                        Upload billede
+                    </div>
                 </div>
-                <div class="card qrcard jam">
+                <div class="card qrcard">
                     <div class="qr" id="qrJam"></div>
-                    <div class="qrlabel">🎶 Join jammet</div>
-                    <div class="qrsub">Tilføj sange til køen</div>
+                    <div class="qrlabel">
+                        <span class="icon"><svg viewBox="0 0 24 24"><circle cx="6" cy="17" r="3"></circle><circle cx="16" cy="15" r="3"></circle><path d="M9 17V5l10 -2v12"></path></svg></span>
+                        Join jammet
+                    </div>
                 </div>
             </div>
         </div>

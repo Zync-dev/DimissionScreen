@@ -1,10 +1,14 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\Lukas\\Documents\\GitHub\\eksamensprojekt-programmering\\Studenterfest\\",
+  "WorkspaceRootPath": "C:\\Users\\Lukas\\Documents\\GitHub\\DimissionScreen\\Studenterfest\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{17D76306-A671-4346-89E4-06219490A564}|Studenterfest\\Studenterfest.csproj|c:\\users\\lukas\\documents\\github\\eksamensprojekt-programmering\\studenterfest\\studenterfest\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{17D76306-A671-4346-89E4-06219490A564}|Studenterfest\\Studenterfest.csproj|solutionrelative:studenterfest\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{85A95A2D-7386-637A-2851-0A95DEC68739}|Studenterfest\\Studenterfest.csproj|c:\\users\\lukas\\documents\\github\\dimissionscreen\\studenterfest\\studenterfest\\wwwroot\\css\\tv.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{85A95A2D-7386-637A-2851-0A95DEC68739}|Studenterfest\\Studenterfest.csproj|solutionrelative:studenterfest\\wwwroot\\css\\tv.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{85A95A2D-7386-637A-2851-0A95DEC68739}|Studenterfest\\Studenterfest.csproj|c:\\users\\lukas\\documents\\github\\dimissionscreen\\studenterfest\\studenterfest\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{85A95A2D-7386-637A-2851-0A95DEC68739}|Studenterfest\\Studenterfest.csproj|solutionrelative:studenterfest\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -19,12 +23,25 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "tv.css",
+              "DocumentMoniker": "C:\\Users\\Lukas\\Documents\\GitHub\\DimissionScreen\\Studenterfest\\Studenterfest\\wwwroot\\css\\tv.css",
+              "RelativeDocumentMoniker": "Studenterfest\\wwwroot\\css\\tv.css",
+              "ToolTip": "C:\\Users\\Lukas\\Documents\\GitHub\\DimissionScreen\\Studenterfest\\Studenterfest\\wwwroot\\css\\tv.css",
+              "RelativeToolTip": "Studenterfest\\wwwroot\\css\\tv.css",
+              "ViewState": "AgIAACEAAAAAAAAAAAAAADkAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2026-06-21T13:04:40.847Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
               "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\Lukas\\Documents\\GitHub\\eksamensprojekt-programmering\\Studenterfest\\Studenterfest\\Program.cs",
+              "DocumentMoniker": "C:\\Users\\Lukas\\Documents\\GitHub\\DimissionScreen\\Studenterfest\\Studenterfest\\Program.cs",
               "RelativeDocumentMoniker": "Studenterfest\\Program.cs",
-              "ToolTip": "C:\\Users\\Lukas\\Documents\\GitHub\\eksamensprojekt-programmering\\Studenterfest\\Studenterfest\\Program.cs",
+              "ToolTip": "C:\\Users\\Lukas\\Documents\\GitHub\\DimissionScreen\\Studenterfest\\Studenterfest\\Program.cs",
               "RelativeToolTip": "Studenterfest\\Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAA5AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-06-18T23:56:57.512Z",
               "EditorCaption": ""
