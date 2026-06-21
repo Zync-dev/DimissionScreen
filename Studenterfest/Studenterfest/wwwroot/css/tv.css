@@ -29,6 +29,12 @@ body { font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto,
 .new.show { opacity: 1; transform: none; }
 
 /* Højre kolonne */
+.right > .card:first-child {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
 .right { display: flex; flex-direction: column; gap: 22px; min-height: 0; }
 .card { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.09); border-radius: 18px; padding: 20px; }
 .jamtag { display: flex; align-items: center; gap: 7px; font-size: clamp(10px,1vw,13px); color: #46e07f; margin-bottom: 14px; font-weight: 700; letter-spacing: .7px; text-transform: uppercase; }
@@ -44,7 +50,12 @@ body { font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto,
 .tt { display: flex; justify-content: space-between; font-size: clamp(10px,1.1vw,14px); opacity: .55; margin-top: 7px; font-variant-numeric: tabular-nums; }
 
 /* QR-koder */
-.qrs { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; flex: 1; min-height: 0; }
+.qrs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    flex: 0 0 auto;
+}
 .qrcard { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 12px; }
 .qrcard.photo { border-color: rgba(245,180,90,.4); background: rgba(245,180,90,.08); }
 .qrcard.jam { border-color: rgba(29,185,84,.4); background: rgba(29,185,84,.08); }

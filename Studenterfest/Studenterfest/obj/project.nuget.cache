@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "7/hHsgO3r3I=",
+  "dgSpecHash": "cJs/kqknRZw=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Lukas\\Documents\\GitHub\\eksamensprojekt-programmering\\Studenterfest\\Studenterfest\\Studenterfest.csproj",
+  "projectFilePath": "C:\\Users\\Lukas\\Documents\\GitHub\\DimissionScreen\\Studenterfest\\Studenterfest\\Studenterfest.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Lukas\\.nuget\\packages\\azure.core\\1.47.1\\azure.core.1.47.1.nupkg.sha512",
     "C:\\Users\\Lukas\\.nuget\\packages\\azure.identity\\1.14.2\\azure.identity.1.14.2.nupkg.sha512",

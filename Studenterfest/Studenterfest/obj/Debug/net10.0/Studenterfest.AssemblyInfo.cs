@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Studenterfest")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b86225171a4ca0fa62cc3afcbed10a3715b21f15")]
 [assembly: System.Reflection.AssemblyProductAttribute("Studenterfest")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Studenterfest")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
