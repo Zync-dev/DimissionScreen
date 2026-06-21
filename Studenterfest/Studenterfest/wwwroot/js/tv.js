@@ -133,6 +133,13 @@
     } catch (e) { }
   }
 
+  function setLine(el, text) {
+    el.classList.remove('anim');
+    void el.offsetWidth; // genstarter animationen
+    el.textContent = text;
+    el.classList.add('anim');
+  }
+
   function updateLyrics(posMs) {
     if (!lyricsLines.length) return;
     let idx = -1;
@@ -141,8 +148,8 @@
     }
     if (idx === curLineIdx) return;
     curLineIdx = idx;
-    lyCur.textContent = idx >= 0 ? lyricsLines[idx].text : '';
-    lyNext.textContent = (idx + 1 < lyricsLines.length) ? lyricsLines[idx + 1].text : '';
+    setLine(lyCur, idx >= 0 ? lyricsLines[idx].text : '');
+    setLine(lyNext, (idx + 1 < lyricsLines.length) ? lyricsLines[idx + 1].text : '');
   }
 
   let curProgress = 0, curDuration = 0, playing = false, lastTick = Date.now();
