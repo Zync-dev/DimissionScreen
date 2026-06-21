@@ -131,6 +131,7 @@ public class SpotifyService
             return new { isPlaying = false, connected = true };
 
         var title = item.GetProperty("name").GetString();
+        var trackId = item.TryGetProperty("id", out var idv) ? idv.GetString() : null;
         var artist = string.Join(", ", item.GetProperty("artists")
             .EnumerateArray().Select(a => a.GetProperty("name").GetString()));
         var album = item.GetProperty("album");
@@ -149,6 +150,7 @@ public class SpotifyService
         {
             isPlaying = playing,
             connected = true,
+            id = trackId,
             title,
             artist,
             album = albumName,

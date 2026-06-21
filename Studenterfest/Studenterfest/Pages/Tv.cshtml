@@ -9,7 +9,8 @@
         uploadUrl = Model.UploadUrl,
         jamUrl = Model.JamUrl,
         photosUrl = "/Tv?handler=Photos",
-        nowPlayingUrl = "/Tv?handler=NowPlaying"
+        nowPlayingUrl = "/Tv?handler=NowPlaying",
+        lyricsUrl = "/Tv?handler=Lyrics"
     };
 }
 <!DOCTYPE html>
@@ -55,6 +56,10 @@
                 </div>
                 <div class="bar"><i id="prog"></i></div>
                 <div class="tt"><span id="elapsed">0:00</span><span id="total">0:00</span></div>
+                <div class="lyrics" id="lyrics" hidden>
+                    <div class="ly-cur" id="lyCur"></div>
+                    <div class="ly-next" id="lyNext"></div>
+                </div>
             </div>
 
             <div class="qrs">

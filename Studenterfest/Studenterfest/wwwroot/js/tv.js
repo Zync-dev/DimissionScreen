@@ -96,6 +96,55 @@
   const elapsedEl = document.getElementById('elapsed');
   const totalEl = document.getElementById('total');
 
+  // --- Lyrics ---
+  const lyricsEl = document.getElementById('lyrics');
+  const lyCur = document.getElementById('lyCur');
+  const lyNext = document.getElementById('lyNext');
+  let lyricsLines = [];
+  let curLineIdx = -2;
+  let currentTrackKey = null;
+
+  function hideLyrics() {
+    lyricsLines = [];
+    curLineIdx = -2;
+    lyricsEl.hidden = true;
+    lyCur.textContent = '';
+    lyNext.textContent = '';
+  }
+
+  async function loadLyrics(d) {
+    hideLyrics();
+    try {
+      const u = new URLSearchParams({
+        trackId: d.id || '',
+        track: d.title || '',
+        artist: d.artist || '',
+        album: d.album || '',
+        durationMs: String(d.durationMs || 0)
+      });
+      const r = await fetch(CFG.lyricsUrl + '&' + u.toString());
+      const data = await r.json();
+      if (data.found && Array.isArray(data.lines) && data.lines.length) {
+        lyricsLines = data.lines;
+        curLineIdx = -2;
+        lyricsEl.hidden = false;
+        updateLyrics(curProgress);
+      }
+    } catch (e) { }
+  }
+
+  function updateLyrics(posMs) {
+    if (!lyricsLines.length) return;
+    let idx = -1;
+    for (let i = 0; i < lyricsLines.length; i++) {
+      if (lyricsLines[i].t <= posMs) idx = i; else break;
+    }
+    if (idx === curLineIdx) return;
+    curLineIdx = idx;
+    lyCur.textContent = idx >= 0 ? lyricsLines[idx].text : '';
+    lyNext.textContent = (idx + 1 < lyricsLines.length) ? lyricsLines[idx + 1].text : '';
+  }
+
   let curProgress = 0, curDuration = 0, playing = false, lastTick = Date.now();
   const fmt = s => { s = Math.max(0, Math.floor(s)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
 
@@ -108,8 +157,8 @@
     try {
       const r = await fetch(CFG.nowPlayingUrl);
       const d = await r.json();
-      if (!d.connected) { live.classList.remove('on'); liveText.textContent = 'spotify ikke forbundet'; jamtagText.textContent = 'forbind spotify'; playing = false; return; }
-      if (!d.isPlaying || !d.title) { live.classList.remove('on'); liveText.textContent = 'intet spiller'; jamtagText.textContent = 'sat på pause'; playing = false; return; }
+      if (!d.connected) { live.classList.remove('on'); liveText.textContent = 'spotify ikke forbundet'; jamtagText.textContent = 'forbind spotify'; playing = false; currentTrackKey = null; hideLyrics(); return; }
+      if (!d.isPlaying || !d.title) { live.classList.remove('on'); liveText.textContent = 'intet spiller'; jamtagText.textContent = 'sat på pause'; playing = false; currentTrackKey = null; hideLyrics(); return; }
 
       live.classList.add('on');
       liveText.textContent = 'live fra jammet';
@@ -119,6 +168,12 @@
       setArt(d.art);
       curProgress = d.progressMs; curDuration = d.durationMs; playing = true; lastTick = Date.now();
       totalEl.textContent = fmt(curDuration / 1000);
+
+      const key = d.id || (d.title + '|' + d.artist);
+      if (key !== currentTrackKey) {
+        currentTrackKey = key;
+        loadLyrics(d);
+      }
     } catch (e) { }
   }
 
@@ -132,5 +187,6 @@
     lastTick = now;
     progEl.style.width = (curProgress / curDuration * 100) + '%';
     elapsedEl.textContent = fmt(curProgress / 1000);
+    updateLyrics(curProgress);
   }, 1000);
 })();

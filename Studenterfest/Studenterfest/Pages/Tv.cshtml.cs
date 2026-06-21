@@ -8,12 +8,14 @@ public class TvModel : PageModel
 {
     private readonly PhotoStore _photos;
     private readonly SpotifyService _spotify;
+    private readonly LyricsService _lyrics;
     private readonly IConfiguration _cfg;
 
-    public TvModel(PhotoStore photos, SpotifyService spotify, IConfiguration cfg)
+    public TvModel(PhotoStore photos, SpotifyService spotify, LyricsService lyrics, IConfiguration cfg)
     {
         _photos = photos;
         _spotify = spotify;
+        _lyrics = lyrics;
         _cfg = cfg;
     }
 
@@ -30,4 +32,13 @@ public class TvModel : PageModel
     // GET /Tv?handler=NowPlaying
     public async Task<IActionResult> OnGetNowPlaying()
         => new JsonResult(await _spotify.GetCurrentlyPlayingAsync());
+
+    // GET /Tv?handler=Lyrics&track=...&artist=...&album=...&durationMs=...&trackId=...
+    public async Task<IActionResult> OnGetLyrics(string? trackId, string? track, string? artist, string? album, int durationMs)
+    {
+        if (string.IsNullOrWhiteSpace(track) || string.IsNullOrWhiteSpace(artist))
+            return new JsonResult(new { found = false, lines = Array.Empty<object>() });
+
+        return new JsonResult(await _lyrics.GetAsync(trackId ?? "", track, artist, album ?? "", durationMs));
+    }
 }
