@@ -98,8 +98,12 @@
 
   // --- Lyrics ---
   const lyricsEl = document.getElementById('lyrics');
+  const lyPrev = document.getElementById('lyPrev');
   const lyCur = document.getElementById('lyCur');
-  const lyNext = document.getElementById('lyNext');
+  const lyN1 = document.getElementById('lyN1');
+  const lyN2 = document.getElementById('lyN2');
+  const lyN3 = document.getElementById('lyN3');
+  const lySlots = [lyPrev, lyCur, lyN1, lyN2, lyN3];
   let lyricsLines = [];
   let curLineIdx = -2;
   let currentTrackKey = null;
@@ -108,8 +112,7 @@
     lyricsLines = [];
     curLineIdx = -2;
     lyricsEl.hidden = true;
-    lyCur.textContent = '';
-    lyNext.textContent = '';
+    lySlots.forEach(el => { el.textContent = ''; });
   }
 
   async function loadLyrics(d) {
@@ -133,13 +136,6 @@
     } catch (e) { }
   }
 
-  function setLine(el, text) {
-    el.classList.remove('anim');
-    void el.offsetWidth; // genstarter animationen
-    el.textContent = text;
-    el.classList.add('anim');
-  }
-
   function updateLyrics(posMs) {
     if (!lyricsLines.length) return;
     let idx = -1;
@@ -148,8 +144,17 @@
     }
     if (idx === curLineIdx) return;
     curLineIdx = idx;
-    setLine(lyCur, idx >= 0 ? lyricsLines[idx].text : '');
-    setLine(lyNext, (idx + 1 < lyricsLines.length) ? lyricsLines[idx + 1].text : '');
+
+    const at = i => (i >= 0 && i < lyricsLines.length) ? lyricsLines[i].text : '';
+    lyPrev.textContent = idx >= 1 ? at(idx - 1) : '';
+    lyCur.textContent = idx >= 0 ? at(idx) : '';
+    lyN1.textContent = at(idx + 1);
+    lyN2.textContent = at(idx + 2);
+    lyN3.textContent = at(idx + 3);
+
+    lyricsEl.classList.remove('anim');
+    void lyricsEl.offsetWidth; // genstarter animationen
+    lyricsEl.classList.add('anim');
   }
 
   let curProgress = 0, curDuration = 0, playing = false, lastTick = Date.now();
