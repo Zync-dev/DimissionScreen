@@ -1,6 +1,9 @@
 (function () {
   const CFG = window.TV_CONFIG || {};
 
+  // Mørkt tema til aftenen: åbn /Tv?dark
+  if (location.search.toLowerCase().includes('dark')) document.body.classList.add('dark');
+
   // --- QR-koder ---
   function makeQR(elId, text) {
     const el = document.getElementById(elId);
