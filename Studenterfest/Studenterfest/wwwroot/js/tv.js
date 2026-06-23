@@ -165,16 +165,25 @@
     if (idx === curLineIdx) return;
     curLineIdx = idx;
 
-    lyLineEls.forEach(function (el) { el.classList.remove('active', 'near'); });
+    // dybdeskarphed: aktiv linje skarp, naboer toner ud og slører med afstanden
+    lyLineEls.forEach(function (el, i) {
+      if (i === idx) {
+        el.classList.add('active');
+        el.style.filter = 'blur(0px)';
+        el.style.opacity = '1';
+        el.style.transform = 'scale(1)';
+      } else {
+        el.classList.remove('active');
+        const d = Math.abs(i - idx);
+        el.style.filter = 'blur(' + Math.min(d * 1.2, 4.5).toFixed(2) + 'px)';
+        el.style.opacity = String(Math.max(0.12, 0.62 - d * 0.16));
+        el.style.transform = 'scale(' + Math.max(0.94, 1 - d * 0.018).toFixed(3) + ')';
+      }
+    });
+
     if (idx < 0) { lyTrack.style.transform = 'translateY(0)'; return; }
-
     const cur = lyLineEls[idx];
-    cur.classList.add('active');
-    if (lyLineEls[idx - 1]) lyLineEls[idx - 1].classList.add('near');
-    if (lyLineEls[idx + 1]) lyLineEls[idx + 1].classList.add('near');
-
-    // glid banen så den aktive linje sidder ~40% nede i panelet
-    const focal = lyricsEl.clientHeight * 0.4;
+    const focal = lyricsEl.clientHeight * 0.42;
     const y = cur.offsetTop + cur.offsetHeight / 2;
     lyTrack.style.transform = 'translateY(' + (focal - y) + 'px)';
   }
