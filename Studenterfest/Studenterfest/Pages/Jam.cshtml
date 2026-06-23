@@ -1,0 +1,74 @@
+@page "/jam"
+@model DimissionScreen.Pages.JamModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Skift jam-link</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        body { font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            background: radial-gradient(140% 120% at 50% -10%, #ffffff 0%, #e8e6ee 60%);
+            color: #14121b; min-height: 100dvh; display: flex; flex-direction: column; align-items: center;
+            padding: 34px 22px calc(28px + env(safe-area-inset-bottom)); -webkit-font-smoothing: antialiased; }
+        .wrap { width: 100%; max-width: 440px; }
+        .top { text-align: center; margin: 6px 0 26px; }
+        h1 { font-size: 22px; font-weight: 500; }
+        .sub { color: #5c5866; font-size: 14px; margin-top: 6px; }
+        .card { background: #f5f4f8; border: 1px solid rgba(0,0,0,.08); border-radius: 16px; padding: 18px; }
+        label { display: block; font-size: 12px; letter-spacing: .5px; text-transform: uppercase; color: #5c5866; margin-bottom: 8px; }
+        .cur { word-break: break-all; font-size: 13px; color: #5c5866; background: rgba(0,0,0,.04); border-radius: 10px; padding: 12px 14px; margin-bottom: 18px; }
+        input[type=text], input[type=password] { width: 100%; padding: 14px 16px; border-radius: 12px; border: 1px solid rgba(0,0,0,.14);
+            background: #fff; color: #14121b; font-size: 16px; }
+        input::placeholder { color: #9a96a6; }
+        input:focus { outline: none; border-color: #15a34a; }
+        button { width: 100%; margin-top: 16px; padding: 16px; border: none; border-radius: 14px;
+            background: #15a34a; color: #fff; font-weight: 500; font-size: 16px; cursor: pointer; }
+        button:active { transform: scale(.99); }
+        .ok { margin-top: 16px; text-align: center; color: #15a34a; font-size: 15px; }
+        .denied { text-align: center; color: #c0392b; font-size: 15px; margin-top: 10px; }
+        .hint { margin-top: 16px; font-size: 12.5px; color: #8b8794; line-height: 1.5; text-align: center; }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <div class="top">
+            <h1>Skift jam-link</h1>
+            <div class="sub">Opdaterer QR-koden på storskærmen automatisk</div>
+        </div>
+
+        @if (!Model.Authorized)
+        {
+            <div class="card">
+                <div class="denied">Forkert eller manglende nøgle.</div>
+                <div class="hint">Tilføj <code>?key=DIN_NØGLE</code> til adressen.</div>
+            </div>
+        }
+        else
+        {
+            <div class="card">
+                <label>Nuværende link</label>
+                <div class="cur">@(string.IsNullOrEmpty(Model.Current) ? "(intet sat endnu)" : Model.Current)</div>
+
+                <form method="post">
+                    <input type="hidden" asp-for="Key" />
+                    <label for="NewUrl">Nyt jam-link</label>
+                    <input type="text" id="NewUrl" asp-for="NewUrl" inputmode="url" autocapitalize="off" autocomplete="off"
+                           placeholder="https://open.spotify.com/..." />
+                    <button type="submit">Gem og opdater skærm</button>
+                </form>
+
+                @if (Model.Saved)
+                {
+                    <div class="ok">✓ Gemt – skærmen opdaterer inden for få sekunder</div>
+                }
+                <div class="hint">Hent linket i Spotify: start jam → Del → Kopiér link.</div>
+            </div>
+        }
+    </div>
+</body>
+</html>

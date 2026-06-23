@@ -12,6 +12,7 @@ builder.Services.AddHttpClient();
 builder.Services.AddSingleton<SpotifyService>();
 builder.Services.AddSingleton<PhotoStore>();
 builder.Services.AddSingleton<LyricsService>();
+builder.Services.AddSingleton<JamStore>();
 // Lad AJAX sende antiforgery-token via header
 builder.Services.AddAntiforgery(o => o.HeaderName = "RequestVerificationToken");
 

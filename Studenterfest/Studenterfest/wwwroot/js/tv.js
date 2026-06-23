@@ -18,6 +18,19 @@
   makeQR('qrPhoto', CFG.uploadUrl);
   makeQR('qrJam', CFG.jamUrl);
 
+  // Jam-linket kan skiftes undervejs (via /jam) – tjek løbende og forny QR'en
+  let currentJamUrl = CFG.jamUrl;
+  function refreshJam() {
+    if (!CFG.jamPollUrl) return;
+    fetch(CFG.jamPollUrl).then(r => r.json()).then(d => {
+      if (d && d.url && d.url !== currentJamUrl) {
+        currentJamUrl = d.url;
+        makeQR('qrJam', currentJamUrl);
+      }
+    }).catch(() => {});
+  }
+  setInterval(refreshJam, 12000);
+
   // --- Slideshow (fuldt billede + udtonet baggrund, ingen beskæring) ---
   let photos = [];
   let shown = -1;
