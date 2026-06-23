@@ -13,6 +13,7 @@
   --art-bg: #e0dde8;
   --art-fg: #8b8794;
   --track: rgba(0,0,0,.16);
+  --amber: #c0883a;
 }
 body.dark {
   /* Mørkt tema (til aftenen – åbn /Tv?dark) */
@@ -29,6 +30,7 @@ body.dark {
   --art-bg: #23202c;
   --art-fg: #6f6a7a;
   --track: rgba(255,255,255,.14);
+  --amber: #d6a35a;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -97,13 +99,21 @@ body {
 
 /* QR */
 .qrs { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(12px, 1.3vw, 18px); align-items: start; }
-.qrcard { aspect-ratio: 1; padding: clamp(12px, 1.2vw, 18px) clamp(8px, 1vw, 12px); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: clamp(9px, 1vw, 13px); }
-.qr { width: min(82%, 240px); aspect-ratio: 1; background: #fff; border-radius: 9px; padding: 7px; display: flex; align-items: center; justify-content: center; }
+.qrcard { aspect-ratio: 1; padding: clamp(13px, 1.3vw, 19px) clamp(11px, 1.1vw, 15px); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: clamp(10px, 1.1vw, 15px); }
+.qrcard.photo { --qr-accent: var(--amber); }
+.qrcard.jam { --qr-accent: var(--accent); }
+.qr-title { align-self: flex-start; display: flex; align-items: center; gap: 7px; font-size: clamp(12px, 1.35vw, 18px); font-weight: 500; color: var(--text); }
+.qr-title .icon { font-size: 1.15em; color: var(--qr-accent); }
+.qr-frame { position: relative; padding: clamp(9px, .95vw, 14px); }
+.qr { width: min(60%, 200px); aspect-ratio: 1; background: #fff; border-radius: 8px; padding: 7px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,.07); }
 .qr canvas, .qr img, .qr svg { width: 100%; height: 100%; display: block; image-rendering: -webkit-optimize-contrast; image-rendering: crisp-edges; }
 .qr .fallback { font-size: 9px; color: #333; word-break: break-all; padding: 4px; }
-.qrlabel { display: flex; align-items: center; gap: 6px; font-size: clamp(12px, 1.3vw, 17px); color: var(--text); }
-.qrlabel .icon { font-size: 1.1em; }
-.qrsub { font-size: clamp(9px, .95vw, 12px); color: var(--faint); }
+.cnr { position: absolute; width: clamp(15px, 1.5vw, 24px); height: clamp(15px, 1.5vw, 24px); border: 0 solid var(--qr-accent); }
+.cnr.tl { top: 0; left: 0; border-top-width: 2.5px; border-left-width: 2.5px; border-radius: 6px 0 0 0; }
+.cnr.tr { top: 0; right: 0; border-top-width: 2.5px; border-right-width: 2.5px; border-radius: 0 6px 0 0; }
+.cnr.bl { bottom: 0; left: 0; border-bottom-width: 2.5px; border-left-width: 2.5px; border-radius: 0 0 0 6px; }
+.cnr.br { bottom: 0; right: 0; border-bottom-width: 2.5px; border-right-width: 2.5px; border-radius: 0 0 6px 0; }
+.qrsub { font-size: clamp(10px, 1vw, 13px); color: var(--faint); }
 
 /* Lyrics-panel (Lyrics Plus-stil: dybdeskarphed + blødt spring) */
 .lyrics {
