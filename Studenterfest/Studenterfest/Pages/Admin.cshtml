@@ -1,0 +1,135 @@
+@page "/admin"
+@model DimissionScreen.Pages.AdminModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Admin · Dimission</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        body { font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            background: radial-gradient(140% 120% at 50% -8%, #ffffff 0%, #e8e6ee 55%);
+            color: #14121b; min-height: 100dvh; padding: 30px 20px calc(40px + env(safe-area-inset-bottom));
+            -webkit-font-smoothing: antialiased; }
+        .wrap { width: 100%; max-width: 560px; margin: 0 auto; }
+        h1 { font-size: 22px; font-weight: 500; text-align: center; }
+        .sub { color: #5c5866; font-size: 14px; text-align: center; margin: 6px 0 24px; }
+        .card { background: #f5f4f8; border: 1px solid rgba(0,0,0,.08); border-radius: 16px; padding: 18px; margin-bottom: 18px; }
+        .card h2 { font-size: 12px; letter-spacing: 1px; text-transform: uppercase; color: #5c5866; font-weight: 500; margin-bottom: 14px; }
+        label { display: block; font-size: 13px; color: #5c5866; margin: 14px 0 7px; }
+        label:first-of-type { margin-top: 0; }
+        input[type=text], select { width: 100%; padding: 13px 15px; border-radius: 11px; border: 1px solid rgba(0,0,0,.14);
+            background: #fff; color: #14121b; font-size: 16px; }
+        input:focus, select:focus { outline: none; border-color: #15a34a; }
+        .row { display: flex; align-items: center; gap: 10px; margin-top: 16px; }
+        .row input[type=checkbox] { width: 20px; height: 20px; accent-color: #15a34a; }
+        .row label { margin: 0; font-size: 15px; color: #14121b; }
+        button { border: none; border-radius: 12px; background: #15a34a; color: #fff; font-weight: 500; font-size: 16px; cursor: pointer; }
+        .save { width: 100%; margin-top: 20px; padding: 15px; }
+        .save:active { transform: scale(.99); }
+        .ok { color: #15a34a; font-size: 14px; text-align: center; margin-top: 14px; }
+        .denied { text-align: center; color: #c0392b; font-size: 15px; }
+        .hint { font-size: 12.5px; color: #8b8794; margin-top: 10px; line-height: 1.5; }
+        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .thumb { position: relative; aspect-ratio: 1; border-radius: 10px; overflow: hidden; background: #e6e4ec; border: 1px solid rgba(0,0,0,.08); }
+        .thumb img { width: 100%; height: 100%; object-fit: cover; }
+        .thumb .who { position: absolute; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,.55); color: #fff; font-size: 10px; padding: 3px 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .thumb .del { position: absolute; top: 5px; right: 5px; width: 28px; height: 28px; border-radius: 8px;
+            background: rgba(192,57,43,.92); color: #fff; font-size: 15px; line-height: 1; padding: 0; display: flex; align-items: center; justify-content: center; }
+        .empty { color: #8b8794; font-size: 14px; text-align: center; padding: 16px 0; }
+        a.tvlink { display: inline-block; margin-top: 6px; color: #15a34a; font-size: 13px; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <h1>Kontrolpanel</h1>
+        <div class="sub">Ændringer slår igennem på storskærmen inden for få sekunder</div>
+
+        @if (!Model.Authorized)
+        {
+            <div class="card">
+                <div class="denied">Forkert eller manglende nøgle.</div>
+                <div class="hint" style="text-align:center">Tilføj <code>?key=DIN_NØGLE</code> til adressen.</div>
+            </div>
+        }
+        else
+        {
+            <form method="post" asp-page-handler="Save">
+                <input type="hidden" name="Key" value="@Model.Key" />
+
+                <div class="card">
+                    <h2>Udseende</h2>
+                    <label for="Theme">Tema</label>
+                    <select id="Theme" name="Theme">
+                        <option value="light" selected="@(Model.Current.Theme != "dark")">Lyst (dagslys)</option>
+                        <option value="dark" selected="@(Model.Current.Theme == "dark")">Mørkt (aften)</option>
+                    </select>
+
+                    <label for="Title">Overskrift</label>
+                    <input type="text" id="Title" name="Title" value="@Model.Current.Title" autocomplete="off" />
+
+                    <label for="Subtitle">Undertekst</label>
+                    <input type="text" id="Subtitle" name="Subtitle" value="@Model.Current.Subtitle" autocomplete="off" />
+
+                    <div class="row">
+                        <input type="checkbox" id="Lyrics" name="Lyrics" value="true" checked="@Model.Current.Lyrics" />
+                        <label for="Lyrics">Vis lyrics</label>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2>Spotify Jam</h2>
+                    <label for="JamUrl">Jam-link (QR-kode)</label>
+                    <input type="text" id="JamUrl" name="JamUrl" value="@Model.Current.JamUrl" inputmode="url" autocapitalize="off" autocomplete="off" placeholder="https://open.spotify.com/..." />
+                    <div class="hint">Hent i Spotify: start jam → Del → Kopiér link. Skift det her når jammet udløber.</div>
+                </div>
+
+                <button type="submit" class="save">Gem indstillinger</button>
+                @if (Model.Saved)
+                {
+                    <div class="ok">✓ Gemt</div>
+                }
+            </form>
+
+            <div class="card" style="margin-top:18px">
+                <h2>Billeder (@Model.Photos.Length)</h2>
+                @if (Model.Deleted)
+                {
+                    <div class="ok" style="margin:0 0 12px">✓ Billede fjernet</div>
+                }
+                @if (Model.Photos.Length == 0)
+                {
+                    <div class="empty">Ingen billeder endnu</div>
+                }
+                else
+                {
+                    <div class="grid">
+                        @foreach (var p in Model.Photos.Reverse())
+                        {
+                            <div class="thumb">
+                                <img src="@p.url" loading="lazy" alt="" />
+                                @if (!string.IsNullOrEmpty(p.name))
+                                {
+                                    <div class="who">@p.name</div>
+                                }
+                                <form method="post" asp-page-handler="Delete" style="margin:0">
+                                    <input type="hidden" name="Key" value="@Model.Key" />
+                                    <input type="hidden" name="DeleteFile" value="@p.file" />
+                                    <button type="submit" class="del" title="Fjern">✕</button>
+                                </form>
+                            </div>
+                        }
+                    </div>
+                    <div class="hint">Tryk ✕ for at fjerne et billede fra slideshowet.</div>
+                }
+            </div>
+
+            <div style="text-align:center"><a class="tvlink" href="/Tv">→ Åbn storskærmen</a></div>
+        }
+    </div>
+</body>
+</html>

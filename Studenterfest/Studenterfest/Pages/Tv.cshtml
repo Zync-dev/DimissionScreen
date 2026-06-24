@@ -8,10 +8,12 @@
         subtitle = Model.Subtitle,
         uploadUrl = Model.UploadUrl,
         jamUrl = Model.JamUrl,
+        theme = Model.Theme,
+        lyricsEnabled = Model.LyricsEnabled,
         photosUrl = "/Tv?handler=Photos",
         nowPlayingUrl = "/Tv?handler=NowPlaying",
         lyricsUrl = "/Tv?handler=Lyrics",
-        jamPollUrl = "/Tv?handler=Jam"
+        settingsUrl = "/Tv?handler=Settings"
     };
 }
 <!DOCTYPE html>
@@ -22,10 +24,10 @@
     <title>Dimission – storskærm</title>
     <link rel="stylesheet" href="~/css/tv.css" asp-append-version="true" />
 </head>
-<body>
+<body class="@(Model.Theme == "dark" ? "dark" : null)">
     <div class="screen">
         <div class="topbar">
-            <div class="title">@Model.Title<span class="sub">@Model.Subtitle</span></div>
+            <div class="title"><span id="titleText">@Model.Title</span><span class="sub" id="subText">@Model.Subtitle</span></div>
             <div class="live" id="live">
                 <span class="dot"></span> <span id="liveText">forbinder…</span>
             </div>

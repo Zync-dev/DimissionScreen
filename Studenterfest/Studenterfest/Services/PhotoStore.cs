@@ -1,5 +1,7 @@
 namespace DimissionScreen.Services;
 
+public record PhotoInfo(string url, long ts, string? name, string file);
+
 public class PhotoStore
 {
     public string UploadsDir { get; }
@@ -12,10 +14,10 @@ public class PhotoStore
         Directory.CreateDirectory(UploadsDir);
     }
 
-    public object[] List(int max = 120)
+    public PhotoInfo[] List(int max = 120)
     {
         var dir = new DirectoryInfo(UploadsDir);
-        if (!dir.Exists) return Array.Empty<object>();
+        if (!dir.Exists) return Array.Empty<PhotoInfo>();
 
         return dir.GetFiles("*.jpg")
                   .OrderBy(f => f.CreationTimeUtc)
@@ -30,12 +32,11 @@ public class PhotoStore
                           try { name = File.ReadAllText(sidecar).Trim(); } catch { /* ignorér */ }
                           if (string.IsNullOrWhiteSpace(name)) name = null;
                       }
-                      return (object)new
-                      {
-                          url = $"/uploads/{f.Name}",
-                          ts = new DateTimeOffset(f.CreationTimeUtc).ToUnixTimeMilliseconds(),
-                          name
-                      };
+                      return new PhotoInfo(
+                          $"/uploads/{f.Name}",
+                          new DateTimeOffset(f.CreationTimeUtc).ToUnixTimeMilliseconds(),
+                          name,
+                          f.Name);
                   })
                   .ToArray();
     }
@@ -54,10 +55,23 @@ public class PhotoStore
         if (!string.IsNullOrEmpty(name))
         {
             try { await File.WriteAllTextAsync(Path.Combine(UploadsDir, stamp + ".txt"), name); }
-            catch { /* navn er valgfrit – fejler det, gemmer vi bare billedet */ }
+            catch { /* navn er valgfrit */ }
         }
 
         return $"/uploads/{fileName}";
+    }
+
+    public void Delete(string? fileName)
+    {
+        // kun rent filnavn – ingen sti-traversal
+        var safe = Path.GetFileName(fileName ?? "");
+        if (string.IsNullOrEmpty(safe) || !safe.EndsWith(".jpg")) return;
+
+        var jpg = Path.Combine(UploadsDir, safe);
+        if (File.Exists(jpg)) { try { File.Delete(jpg); } catch { } }
+
+        var txt = Path.Combine(UploadsDir, Path.GetFileNameWithoutExtension(safe) + ".txt");
+        if (File.Exists(txt)) { try { File.Delete(txt); } catch { } }
     }
 
     private static string CleanName(string? n)

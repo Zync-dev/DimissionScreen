@@ -9,21 +9,24 @@ public class TvModel : PageModel
     private readonly PhotoStore _photos;
     private readonly SpotifyService _spotify;
     private readonly LyricsService _lyrics;
-    private readonly JamStore _jam;
-    private readonly IConfiguration _cfg;
+    private readonly SettingsStore _settings;
 
-    public TvModel(PhotoStore photos, SpotifyService spotify, LyricsService lyrics, JamStore jam, IConfiguration cfg)
+    public TvModel(PhotoStore photos, SpotifyService spotify, LyricsService lyrics, SettingsStore settings)
     {
         _photos = photos;
         _spotify = spotify;
         _lyrics = lyrics;
-        _jam = jam;
-        _cfg = cfg;
+        _settings = settings;
     }
 
-    public string Title => _cfg["Party:Title"] ?? "Dimission";
-    public string Subtitle => _cfg["Party:Subtitle"] ?? "";
-    public string JamUrl => _jam.Get();
+    private PartySettings? _s;
+    private PartySettings S => _s ??= _settings.Get();
+
+    public string Title => S.Title ?? "Dimission";
+    public string Subtitle => S.Subtitle ?? "";
+    public string JamUrl => S.JamUrl ?? "";
+    public string Theme => S.Theme;
+    public bool LyricsEnabled => S.Lyrics;
     public string UploadUrl => $"{Request.Scheme}://{Request.Host}/Upload";
 
     public void OnGet() { }
@@ -35,8 +38,12 @@ public class TvModel : PageModel
     public async Task<IActionResult> OnGetNowPlaying()
         => new JsonResult(await _spotify.GetCurrentlyPlayingAsync());
 
-    // GET /Tv?handler=Jam  (det aktuelle jam-link, så TV'et kan opdatere QR live)
-    public IActionResult OnGetJam() => new JsonResult(new { url = _jam.Get() });
+    // GET /Tv?handler=Settings  (live indstillinger til skærmen)
+    public IActionResult OnGetSettings()
+    {
+        var s = _settings.Get();
+        return new JsonResult(new { title = s.Title, subtitle = s.Subtitle, theme = s.Theme, lyrics = s.Lyrics, jamUrl = s.JamUrl });
+    }
 
     // GET /Tv?handler=Lyrics&track=...&artist=...&album=...&durationMs=...&trackId=...
     public async Task<IActionResult> OnGetLyrics(string? trackId, string? track, string? artist, string? album, int durationMs)

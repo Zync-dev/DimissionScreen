@@ -1,9 +1,6 @@
 (function () {
   const CFG = window.TV_CONFIG || {};
 
-  // Mørkt tema til aftenen: åbn /Tv?dark
-  if (location.search.toLowerCase().includes('dark')) document.body.classList.add('dark');
-
   // --- QR-koder ---
   function makeQR(elId, text) {
     const el = document.getElementById(elId);
@@ -18,18 +15,29 @@
   makeQR('qrPhoto', CFG.uploadUrl);
   makeQR('qrJam', CFG.jamUrl);
 
-  // Jam-linket kan skiftes undervejs (via /jam) – tjek løbende og forny QR'en
+  // --- Live indstillinger (styres fra /admin) ---
+  const titleText = document.getElementById('titleText');
+  const subText = document.getElementById('subText');
   let currentJamUrl = CFG.jamUrl;
-  function refreshJam() {
-    if (!CFG.jamPollUrl) return;
-    fetch(CFG.jamPollUrl).then(r => r.json()).then(d => {
-      if (d && d.url && d.url !== currentJamUrl) {
-        currentJamUrl = d.url;
-        makeQR('qrJam', currentJamUrl);
-      }
-    }).catch(() => {});
+  let lyricsEnabled = CFG.lyricsEnabled !== false;
+
+  function applySettings(d) {
+    if (!d) return;
+    document.body.classList.toggle('dark', d.theme === 'dark');
+    if (d.title != null && titleText && titleText.textContent !== d.title) titleText.textContent = d.title;
+    if (d.subtitle != null && subText && subText.textContent !== d.subtitle) subText.textContent = d.subtitle;
+    if (d.jamUrl && d.jamUrl !== currentJamUrl) { currentJamUrl = d.jamUrl; makeQR('qrJam', currentJamUrl); }
+    if (typeof d.lyrics === 'boolean' && d.lyrics !== lyricsEnabled) {
+      lyricsEnabled = d.lyrics;
+      if (!lyricsEnabled) hideLyrics();
+      currentTrackKey = null; // tving genindlæsning når slået til igen
+    }
   }
-  setInterval(refreshJam, 12000);
+  function pollSettings() {
+    if (!CFG.settingsUrl) return;
+    fetch(CFG.settingsUrl).then(r => r.json()).then(applySettings).catch(() => {});
+  }
+  setInterval(pollSettings, 8000);
 
   // --- Slideshow (fuldt billede + udtonet baggrund, ingen beskæring) ---
   let photos = [];
@@ -226,7 +234,9 @@
       totalEl.textContent = fmt(curDuration / 1000);
 
       const key = d.id || (d.title + '|' + d.artist);
-      if (key !== currentTrackKey) {
+      if (!lyricsEnabled) {
+        hideLyrics();
+      } else if (key !== currentTrackKey) {
         currentTrackKey = key;
         loadLyrics(d);
       }
