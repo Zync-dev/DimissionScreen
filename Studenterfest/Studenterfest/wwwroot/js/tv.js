@@ -93,17 +93,32 @@
     }
   }
 
+  function restartKb(fr) {
+    fr.f.classList.remove('kb');
+    void fr.f.offsetWidth; // tving reflow, så animationen starter forfra
+    fr.f.classList.add('kb');
+  }
+
   function display(photo, flash) {
     ensureLayers();
     const next = 1 - activeLayer;
     const fr = frames[next];
-    fr.img.onload = () => {
+
+    const reveal = () => {
       fr.bg.style.backgroundImage = 'url("' + photo.url + '")';
-      fr.f.classList.add('on');
-      frames[activeLayer].f.classList.remove('on');
+      restartKb(fr);                              // genstart drift på det nye billede
+      fr.f.classList.add('on');                   // ton ind
+      frames[activeLayer].f.classList.remove('on'); // ton gammelt ud – beholder .kb, så det ikke snapper
       activeLayer = next;
     };
+
     fr.img.src = photo.url;
+    if (fr.img.decode) {
+      fr.img.decode().then(reveal).catch(reveal);
+    } else {
+      fr.img.onload = reveal;
+    }
+
     emptyEl.style.display = 'none';
     setCredit(photo.name);
     if (flash) {
