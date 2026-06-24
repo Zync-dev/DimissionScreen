@@ -60,6 +60,7 @@
                 </div>
                 <div class="bar"><i id="prog"></i></div>
                 <div class="tt"><span id="elapsed">0:00</span><span id="total">0:00</span></div>
+                <div class="nextup" id="nextup" hidden><span class="icon"><svg viewBox="0 0 24 24"><path d="M4 7h11"></path><path d="M4 12h11"></path><path d="M4 17h7"></path><circle cx="18" cy="16" r="3"></circle></svg></span> Næste: <span id="nextText"></span></div>
                 <div class="lyrics" id="lyrics" hidden>
                     <div class="ly-track" id="lyTrack"></div>
                 </div>
@@ -81,6 +82,23 @@
                         <span class="cnr tl"></span><span class="cnr tr"></span><span class="cnr bl"></span><span class="cnr br"></span>
                     </div>
                     <div class="qrsub">Tilføj sange til køen</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="standby" id="standby">
+        <div class="sb-inner">
+            <div class="sb-title" id="sbTitle">@Model.Title</div>
+            <div class="sb-sub">Scan en kode og vær med</div>
+            <div class="sb-qrs">
+                <div class="sb-card photo">
+                    <div class="qr" id="sbQrPhoto"></div>
+                    <div class="sb-label"><span class="icon"><svg viewBox="0 0 24 24"><path d="M5 8h2.5l1.5 -2h6l1.5 2H19a1 1 0 0 1 1 1v8a1 1 0 0 1 -1 1H5a1 1 0 0 1 -1 -1V9a1 1 0 0 1 1 -1z"></path><circle cx="12" cy="13" r="3"></circle></svg></span> Upload billede</div>
+                </div>
+                <div class="sb-card jam">
+                    <div class="qr" id="sbQrJam"></div>
+                    <div class="sb-label"><span class="icon"><svg viewBox="0 0 24 24"><circle cx="6" cy="17" r="3"></circle><circle cx="16" cy="15" r="3"></circle><path d="M9 17V5l10 -2v12"></path></svg></span> Join jammet</div>
                 </div>
             </div>
         </div>

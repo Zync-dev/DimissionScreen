@@ -18,15 +18,37 @@
   // --- Live indstillinger (styres fra /admin) ---
   const titleText = document.getElementById('titleText');
   const subText = document.getElementById('subText');
+  const standbyEl = document.getElementById('standby');
+  const sbTitle = document.getElementById('sbTitle');
+  const nextupEl = document.getElementById('nextup');
+  const nextText = document.getElementById('nextText');
   let currentJamUrl = CFG.jamUrl;
   let lyricsEnabled = CFG.lyricsEnabled !== false;
+  let hasPhotos = false;
+  let playing = false;
+
+  // QR-koder på standby-skærmen
+  makeQR('sbQrPhoto', CFG.uploadUrl);
+  makeQR('sbQrJam', CFG.jamUrl);
+
+  // Standby vises kun når der hverken er billeder eller musik
+  function updateStandby() {
+    if (standbyEl) standbyEl.classList.toggle('show', !hasPhotos && !playing);
+  }
 
   function applySettings(d) {
     if (!d) return;
     document.body.classList.toggle('dark', d.theme === 'dark');
-    if (d.title != null && titleText && titleText.textContent !== d.title) titleText.textContent = d.title;
+    if (d.title != null) {
+      if (titleText && titleText.textContent !== d.title) titleText.textContent = d.title;
+      if (sbTitle && sbTitle.textContent !== d.title) sbTitle.textContent = d.title;
+    }
     if (d.subtitle != null && subText && subText.textContent !== d.subtitle) subText.textContent = d.subtitle;
-    if (d.jamUrl && d.jamUrl !== currentJamUrl) { currentJamUrl = d.jamUrl; makeQR('qrJam', currentJamUrl); }
+    if (d.jamUrl && d.jamUrl !== currentJamUrl) {
+      currentJamUrl = d.jamUrl;
+      makeQR('qrJam', currentJamUrl);
+      makeQR('sbQrJam', currentJamUrl);
+    }
     if (typeof d.lyrics === 'boolean' && d.lyrics !== lyricsEnabled) {
       lyricsEnabled = d.lyrics;
       if (!lyricsEnabled) hideLyrics();
@@ -104,6 +126,8 @@
         shown = photos.length - 1;
         display(photos[shown], !isFirstLoad);
       }
+      hasPhotos = photos.length > 0;
+      updateStandby();
     } catch (e) { }
   }
 
@@ -209,7 +233,7 @@
     lyTrack.style.transform = 'translateY(' + (focal - y) + 'px)';
   }
 
-  let curProgress = 0, curDuration = 0, playing = false, lastTick = Date.now();
+  let curProgress = 0, curDuration = 0, lastTick = Date.now();
   const fmt = s => { s = Math.max(0, Math.floor(s)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
 
   function setArt(url) {
@@ -221,8 +245,8 @@
     try {
       const r = await fetch(CFG.nowPlayingUrl);
       const d = await r.json();
-      if (!d.connected) { live.classList.remove('on'); liveText.textContent = 'spotify ikke forbundet'; jamtagText.textContent = 'forbind spotify'; playing = false; currentTrackKey = null; hideLyrics(); return; }
-      if (!d.isPlaying || !d.title) { live.classList.remove('on'); liveText.textContent = 'intet spiller'; jamtagText.textContent = 'sat på pause'; playing = false; currentTrackKey = null; hideLyrics(); return; }
+      if (!d.connected) { live.classList.remove('on'); liveText.textContent = 'spotify ikke forbundet'; jamtagText.textContent = 'forbind spotify'; playing = false; currentTrackKey = null; hideLyrics(); nextupEl.hidden = true; updateStandby(); return; }
+      if (!d.isPlaying || !d.title) { live.classList.remove('on'); liveText.textContent = 'intet spiller'; jamtagText.textContent = 'sat på pause'; playing = false; currentTrackKey = null; hideLyrics(); nextupEl.hidden = true; updateStandby(); return; }
 
       live.classList.add('on');
       liveText.textContent = 'live fra jammet';
@@ -240,6 +264,14 @@
         currentTrackKey = key;
         loadLyrics(d);
       }
+
+      if (d.next && d.next.title) {
+        nextText.textContent = d.next.artist ? (d.next.title + ' · ' + d.next.artist) : d.next.title;
+        nextupEl.hidden = false;
+      } else {
+        nextupEl.hidden = true;
+      }
+      updateStandby();
     } catch (e) { }
   }
 

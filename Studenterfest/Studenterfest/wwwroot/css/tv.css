@@ -133,3 +133,23 @@ body {
 }
 .ly-line.active { font-size: clamp(16px, 1.9vw, 25px); font-weight: 500; color: var(--text); opacity: 1; filter: none; }
 
+
+/* --- Næste i køen --- */
+.nextup { display: flex; align-items: center; gap: 7px; margin-top: clamp(8px, 1vw, 12px); color: var(--muted); font-size: clamp(11px, 1.05vw, 14px); letter-spacing: .2px; }
+.nextup[hidden] { display: none; }
+.nextup .icon { color: var(--accent-soft); font-size: 1.15em; }
+.nextup #nextText { color: var(--text); font-weight: 500; }
+
+/* --- Standby-skærm --- */
+.standby { position: fixed; inset: 0; z-index: 50; background: var(--bg-grad); display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: opacity .7s ease, visibility .7s; }
+.standby.show { opacity: 1; visibility: visible; }
+.sb-inner { display: flex; flex-direction: column; align-items: center; gap: clamp(22px, 3.2vh, 44px); text-align: center; padding: 5vw; }
+.sb-title { font-size: clamp(30px, 5.2vw, 68px); font-weight: 500; color: var(--text); letter-spacing: .5px; }
+.sb-sub { font-size: clamp(14px, 1.8vw, 24px); color: var(--muted); letter-spacing: .4px; margin-top: clamp(-14px, -1vh, -8px); }
+.sb-qrs { display: flex; gap: clamp(28px, 6vw, 90px); }
+.sb-card { display: flex; flex-direction: column; align-items: center; gap: clamp(12px, 1.4vw, 18px); }
+.standby .qr { width: clamp(140px, 17vw, 300px); }
+.sb-label { display: flex; align-items: center; gap: 9px; font-size: clamp(14px, 1.7vw, 23px); font-weight: 500; color: var(--text); }
+.sb-label .icon { font-size: 1.15em; }
+.sb-card.photo .sb-label .icon { color: var(--amber); }
+.sb-card.jam .sb-label .icon { color: var(--accent); }

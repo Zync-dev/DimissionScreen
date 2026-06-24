@@ -146,6 +146,8 @@ public class SpotifyService
         var duration = item.GetProperty("duration_ms").GetInt32();
         var playing = root.TryGetProperty("is_playing", out var ip) && ip.GetBoolean();
 
+        var next = playing ? await GetNextAsync(token) : null;
+
         return new
         {
             isPlaying = playing,
@@ -156,8 +158,35 @@ public class SpotifyService
             album = albumName,
             art,
             progressMs = progress,
-            durationMs = duration
+            durationMs = duration,
+            next
         };
+    }
+
+    private async Task<object?> GetNextAsync(string token)
+    {
+        try
+        {
+            var client = _http.CreateClient();
+            var msg = new HttpRequestMessage(HttpMethod.Get, "https://api.spotify.com/v1/me/player/queue");
+            msg.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var resp = await client.SendAsync(msg);
+            if (!resp.IsSuccessStatusCode) return null;
+
+            var json = await resp.Content.ReadAsStringAsync();
+            using var doc = JsonDocument.Parse(json);
+            if (!doc.RootElement.TryGetProperty("queue", out var q) || q.ValueKind != JsonValueKind.Array || q.GetArrayLength() == 0)
+                return null;
+
+            var item = q[0];
+            var title = item.GetProperty("name").GetString();
+            var artist = string.Join(", ", item.GetProperty("artists").EnumerateArray().Select(a => a.GetProperty("name").GetString()));
+            return new { title, artist };
+        }
+        catch
+        {
+            return null;
+        }
     }
 
     private void TrySaveToken()
