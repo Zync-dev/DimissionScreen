@@ -82,7 +82,7 @@
     if (frames.length) return;
     for (let i = 0; i < 2; i++) {
       const f = document.createElement('div');
-      f.className = 'frame';
+      f.className = 'frame ' + (i === 0 ? 'kb-a' : 'kb-b');
       const bg = document.createElement('div');
       bg.className = 'bg';
       const img = document.createElement('img');
